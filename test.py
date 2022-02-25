@@ -1,4 +1,4 @@
-from turtle import left
+# This is my first Python Game
 import pygame
 import sys
 import os       # to define path to import hte images
