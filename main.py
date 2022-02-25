@@ -16,6 +16,8 @@ ROCKET_H, ROCKET_W = 40 ,60
 ROCKET_RIGHT = pygame.transform.rotate(pygame.transform.scale(ROCKET, (ROCKET_H,ROCKET_W)), 90)
 ROCKET_LEFT = pygame.transform.rotate(pygame.transform.scale(ROCKET, (ROCKET_H,ROCKET_W)), 270)
 VELOCITY = 5
+BULLET_VELOCITY = 10            # velocity of the bullet
+MAX_BULLETS = 3 
 
 pygame.init()
 
@@ -57,18 +59,32 @@ def left_rocket_movement(keys_pressed, rocket):
 def main():
     right_rocket = pygame.Rect(900, 150, ROCKET_W, ROCKET_H)
     left_rocket = pygame.Rect(50, 150, ROCKET_W, ROCKET_H) # to identify rectangle to track the movement of the rocket
+                    
+    right_bullets = []                   # list to keep track of bullets
+    left_bullets = []
     clock = pygame.time.Clock()
     while True:
         clock.tick(FPS)             # to make sure refresh rate is at 60 FPS
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT:               # to be able to quit the game
                 pygame.quit()
                 sys.exit(0)
+            if event.type == pygame.KEYDOWN:            # check if any button is pressed 
+                    if event.key == pygame.K_z and len(left_bullets) < MAX_BULLETS:
+                            bullet = pygame.Rect(left_rocket.x + left_rocket.width, left_rocket.y + left_rocket.height/2, 10 ,5)
+                            left_bullets.append(bullet)
+
+                    if event.key == pygame.K_RSHIFT and len(right_bullets) < MAX_BULLETS:
+                            bullet = pygame.Rect(right_rocket.x, right_rocket.y + right_rocket.height/2, 10 ,5) 
+                            right_bullets.append(bullet)        
+
         # left_rocket.x += 1      # to check movement - will add 1 pixel to the x, moving at 60 FPS = 60 pixels/second 
         # right_rocket.x += -1    # to check movement
         keys_pressed = pygame.key.get_pressed()
         left_rocket_movement(keys_pressed, left_rocket)
         right_rocket_movement(keys_pressed, right_rocket)
+
+        # handle_bullets(left_bullets, right_bullets, left_rocket, right_rocket)
       
 
 
