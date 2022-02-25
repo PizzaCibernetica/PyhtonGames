@@ -18,7 +18,8 @@ ROCKET_LEFT = pygame.transform.rotate(pygame.transform.scale(ROCKET, (ROCKET_H,R
 VELOCITY = 5
 BULLET_VELOCITY = 10            # velocity of the bullet
 MAX_BULLETS = 3 
-
+LEFT_ROCKET_HIT = pygame.USEREVENT + 1          # user event created to keep track of an event 
+RIGHT_ROCKET_HIT = pygame.USEREVENT + 2         # add 2just to have a user event differnt than the one above, userevent is just a number
 pygame.init()
 
 window = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -54,6 +55,20 @@ def left_rocket_movement(keys_pressed, rocket):
     if keys_pressed[pygame.K_w] and rocket.y - VELOCITY > 0:
             rocket.y -= VELOCITY
 
+def handle_bullets(left_bullets, right_bullets, left_rocket, right_rocket):
+        # handle the bullets from left rocket
+        for bullet in left_bullets:
+                bullet.x += BULLET_VELOCITY
+                if right_rocket.colliderect(bullet):
+                        pygame.event.post(pygame.event.Event(RIGHT_ROCKET_HIT))
+                        left_bullets.remove(bullet)
+        # handle the bullets from right rocket
+        for bullet in right_bullets:
+                bullet.x -= BULLET_VELOCITY
+                if left_rocket.colliderect(bullet):
+                        pygame.event.post(pygame.event.Event(LEFT_ROCKET_HIT))
+                        right_bullets.remove(bullet)
+
 
 # defining main function
 def main():
@@ -71,11 +86,11 @@ def main():
                 sys.exit(0)
             if event.type == pygame.KEYDOWN:            # check if any button is pressed 
                     if event.key == pygame.K_z and len(left_bullets) < MAX_BULLETS:
-                            bullet = pygame.Rect(left_rocket.x + left_rocket.width, left_rocket.y + left_rocket.height/2, 10 ,5)
+                            bullet = pygame.Rect(left_rocket.x + left_rocket.width, left_rocket.y + left_rocket.height//2, 10 ,5)
                             left_bullets.append(bullet)
 
                     if event.key == pygame.K_RSHIFT and len(right_bullets) < MAX_BULLETS:
-                            bullet = pygame.Rect(right_rocket.x, right_rocket.y + right_rocket.height/2, 10 ,5) 
+                            bullet = pygame.Rect(right_rocket.x, right_rocket.y + right_rocket.height//2, 10 ,5) 
                             right_bullets.append(bullet)        
 
         # left_rocket.x += 1      # to check movement - will add 1 pixel to the x, moving at 60 FPS = 60 pixels/second 
@@ -84,7 +99,7 @@ def main():
         left_rocket_movement(keys_pressed, left_rocket)
         right_rocket_movement(keys_pressed, right_rocket)
 
-        # handle_bullets(left_bullets, right_bullets, left_rocket, right_rocket)
+        
       
 
 
