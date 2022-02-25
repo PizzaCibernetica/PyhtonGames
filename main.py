@@ -1,5 +1,5 @@
 # This is my first Python Game
-from termios import VEOL
+
 import pygame
 import sys
 import os       # to define path to import hte images
@@ -8,6 +8,7 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 400
 BLUE_COLOR = (0,100,200)        # constant for color 
 BLACK_COLOR = (0,0,0)           # constant for black color
+RED_COLOR = (255, 0, 0)
 FPS = 60                        # constant for refresh rate 
 BORDER = pygame.Rect(SCREEN_WIDTH/2-5 ,0 , 10 , SCREEN_HEIGHT)         # position a rectagle to limit movement of rockets
 # ROCKET = pygame.image.load('Assets/rocket.png')  this is the direct refernce 
@@ -27,11 +28,17 @@ pygame.display.set_caption("My first Game")
 
 
 # defining the draw window
-def draw_window(left_rocket,right_rocket):
+def draw_window(left_rocket,right_rocket, left_bullets, right_bullets):
     window.fill(BLUE_COLOR)     # draw this first for avoind covering the rest
     pygame.draw.rect(window, BLACK_COLOR, BORDER)
     window.blit(ROCKET_RIGHT, (right_rocket.x,right_rocket.y))         # blit is a surface on top of the screen
     window.blit(ROCKET_LEFT, (left_rocket.x,left_rocket.y))
+    # now draw the bullets
+    for bullet in left_bullets:
+            pygame.draw.rect(window, RED_COLOR, bullet)
+    for bullet in right_bullets:
+            pygame.draw.rect(window, RED_COLOR, bullet)
+
     pygame.display.update()         # update an area of the screen if given coordinates
     # or pygame.display.flip()      # refresh the entire screen
 
@@ -85,7 +92,7 @@ def main():
                 pygame.quit()
                 sys.exit(0)
             if event.type == pygame.KEYDOWN:            # check if any button is pressed 
-                    if event.key == pygame.K_z and len(left_bullets) < MAX_BULLETS:
+                    if event.key == pygame.K_LSHIFT and len(left_bullets) < MAX_BULLETS:
                             bullet = pygame.Rect(left_rocket.x + left_rocket.width, left_rocket.y + left_rocket.height//2, 10 ,5)
                             left_bullets.append(bullet)
 
@@ -100,10 +107,13 @@ def main():
         right_rocket_movement(keys_pressed, right_rocket)
 
         
+        handle_bullets(left_bullets, right_bullets, left_rocket, right_rocket)
+
+        
       
 
 
-        draw_window(left_rocket,right_rocket) # add rectagles  to pass to draw window function 
+        draw_window(left_rocket,right_rocket, left_bullets, right_bullets) # add rectagles  to pass to draw window function 
 
 
 # to make sure main comes from this program and not from a differnt module/library
