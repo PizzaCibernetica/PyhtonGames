@@ -69,11 +69,15 @@ def handle_bullets(left_bullets, right_bullets, left_rocket, right_rocket):
                 if right_rocket.colliderect(bullet):
                         pygame.event.post(pygame.event.Event(RIGHT_ROCKET_HIT))
                         left_bullets.remove(bullet)
+                elif bullet.x > SCREEN_WIDTH:
+                        left_bullets.remove(bullet)
         # handle the bullets from right rocket
         for bullet in right_bullets:
                 bullet.x -= BULLET_VELOCITY
                 if left_rocket.colliderect(bullet):
                         pygame.event.post(pygame.event.Event(LEFT_ROCKET_HIT))
+                        right_bullets.remove(bullet)
+                elif bullet.x < 0:
                         right_bullets.remove(bullet)
 
 
