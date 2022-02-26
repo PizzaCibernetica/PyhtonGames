@@ -3,12 +3,16 @@
 import pygame
 import sys
 import os       # to define path to import hte images
+pygame.font.init()             # initialize the font library
 
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 400
 BLUE_COLOR = (0,100,200)        # constant for color 
 BLACK_COLOR = (0,0,0)           # constant for black color
 RED_COLOR = (255, 0, 0)
+WHITE_COLOR = (0,0,0)
+
+HEALTH_FONT = pygame.font.SysFont('comicsans', 40)      # choose fonts
 FPS = 60                        # constant for refresh rate 
 BORDER = pygame.Rect(SCREEN_WIDTH/2-5 ,0 , 10 , SCREEN_HEIGHT)         # position a rectagle to limit movement of rockets
 # ROCKET = pygame.image.load('Assets/rocket.png')  this is the direct refernce 
@@ -28,9 +32,13 @@ pygame.display.set_caption("My first Game")
 
 
 # defining the draw window
-def draw_window(left_rocket,right_rocket, left_bullets, right_bullets):
+def draw_window(left_rocket,right_rocket, left_bullets, right_bullets, left_health, right_health):
     window.fill(BLUE_COLOR)     # draw this first for avoind covering the rest
     pygame.draw.rect(window, BLACK_COLOR, BORDER)
+    left_health_text = HEALTH_FONT.render("Health: " + str(left_health), 1, WHITE_COLOR) # text 
+    right_health_text = HEALTH_FONT.render("Health: " + str(right_health), 1, WHITE_COLOR)
+    window.blit(left_health_text, 1,1,1)
+
     window.blit(ROCKET_RIGHT, (right_rocket.x,right_rocket.y))         # blit is a surface on top of the screen
     window.blit(ROCKET_LEFT, (left_rocket.x,left_rocket.y))
     # now draw the bullets
@@ -85,6 +93,8 @@ def handle_bullets(left_bullets, right_bullets, left_rocket, right_rocket):
 def main():
     right_rocket = pygame.Rect(900, 150, ROCKET_W, ROCKET_H)
     left_rocket = pygame.Rect(50, 150, ROCKET_W, ROCKET_H) # to identify rectangle to track the movement of the rocket
+    left_health = 10
+    right_health = 10
                     
     right_bullets = []                   # list to keep track of bullets
     left_bullets = []
@@ -103,7 +113,17 @@ def main():
                     if event.key == pygame.K_RSHIFT and len(right_bullets) < MAX_BULLETS:
                             bullet = pygame.Rect(right_rocket.x, right_rocket.y + right_rocket.height//2, 10 ,5) 
                             right_bullets.append(bullet)        
-
+            if event.type == LEFT_ROCKET_HIT:
+                    left_health -= 1
+            if event.type == RIGHT_ROCKET_HIT:   
+                    right_health -= 1     
+        winner_text = ''
+        if left_health <= 0:
+                winner_text = 'Left Win!'
+        if right_health <= 0:
+                winner_text = 'Right Wins!'
+        if winner_text != '':
+                pass # someone won
         # left_rocket.x += 1      # to check movement - will add 1 pixel to the x, moving at 60 FPS = 60 pixels/second 
         # right_rocket.x += -1    # to check movement
         keys_pressed = pygame.key.get_pressed()
@@ -117,7 +137,7 @@ def main():
       
 
 
-        draw_window(left_rocket,right_rocket, left_bullets, right_bullets) # add rectagles  to pass to draw window function 
+        draw_window(left_rocket,right_rocket, left_bullets, right_bullets, left_health, right_health) # add rectagles  to pass to draw window function 
 
 
 # to make sure main comes from this program and not from a differnt module/library
