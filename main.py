@@ -1,5 +1,6 @@
 # This is my first Python Game
 
+from turtle import window_width
 import pygame
 import sys
 import os       # to define path to import hte images
@@ -12,7 +13,8 @@ BLACK_COLOR = (0,0,0)           # constant for black color
 RED_COLOR = (255, 0, 0)
 WHITE_COLOR = (0,0,0)
 
-HEALTH_FONT = pygame.font.SysFont('comicsans', 40)      # choose fonts
+HEALTH_FONT = pygame.font.SysFont('comicsans', 20)      # choose fonts
+WINNER_FONT = pygame.font.SysFont('comicsans', 50)
 FPS = 60                        # constant for refresh rate 
 BORDER = pygame.Rect(SCREEN_WIDTH/2-5 ,0 , 10 , SCREEN_HEIGHT)         # position a rectagle to limit movement of rockets
 # ROCKET = pygame.image.load('Assets/rocket.png')  this is the direct refernce 
@@ -37,7 +39,10 @@ def draw_window(left_rocket,right_rocket, left_bullets, right_bullets, left_heal
     pygame.draw.rect(window, BLACK_COLOR, BORDER)
     left_health_text = HEALTH_FONT.render("Health: " + str(left_health), 1, WHITE_COLOR) # text 
     right_health_text = HEALTH_FONT.render("Health: " + str(right_health), 1, WHITE_COLOR)
-    window.blit(left_health_text, 1,1,1)
+    #print('WIndow ', window_width)
+    #print('text' , (right_health_text.get_width))
+    window.blit(right_health_text, (SCREEN_WIDTH - right_health_text.get_width()-10 , 10))      # location of health text for right
+    window.blit(left_health_text, (10,10))                                      # location for health text for left player
 
     window.blit(ROCKET_RIGHT, (right_rocket.x,right_rocket.y))         # blit is a surface on top of the screen
     window.blit(ROCKET_LEFT, (left_rocket.x,left_rocket.y))
@@ -88,6 +93,9 @@ def handle_bullets(left_bullets, right_bullets, left_rocket, right_rocket):
                 elif bullet.x < 0:
                         right_bullets.remove(bullet)
 
+# defining the winner situation
+
+def draw_winner(text):
 
 # defining main function
 def main():
