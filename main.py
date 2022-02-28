@@ -1,6 +1,5 @@
 # This is my first Python Game
 
-from turtle import window_width
 import pygame
 import sys
 import os       # to define path to import hte images
@@ -11,7 +10,7 @@ SCREEN_HEIGHT = 400
 BLUE_COLOR = (0,100,200)        # constant for color 
 BLACK_COLOR = (0,0,0)           # constant for black color
 RED_COLOR = (255, 0, 0)
-WHITE_COLOR = (0,0,0)
+WHITE_COLOR = (255,255,255)
 
 HEALTH_FONT = pygame.font.SysFont('comicsans', 20)      # choose fonts
 WINNER_FONT = pygame.font.SysFont('comicsans', 50)
@@ -96,6 +95,10 @@ def handle_bullets(left_bullets, right_bullets, left_rocket, right_rocket):
 # defining the winner situation
 
 def draw_winner(text):
+        draw_text = WINNER_FONT.render(text, 1, WHITE_COLOR)
+        window.blit(draw_text, (SCREEN_WIDTH/2 - draw_text.get_width()/2 , SCREEN_HEIGHT/2 - draw_text.get_height()/2))
+        pygame.display.update()
+        pygame.time.delay(5000)  # for 5 seconds we are going to show the text and pause for 5 seconds  
 
 # defining main function
 def main():
@@ -127,11 +130,14 @@ def main():
                     right_health -= 1     
         winner_text = ''
         if left_health <= 0:
-                winner_text = 'Left Win!'
-        if right_health <= 0:
                 winner_text = 'Right Wins!'
+                #draw_winner(winner_text)
+        if right_health <= 0:
+                winner_text = 'Left Wins!'
+                # draw_winner(winner_text)
         if winner_text != '':
-                pass # someone won
+                draw_winner(winner_text) # someone won
+                break
         # left_rocket.x += 1      # to check movement - will add 1 pixel to the x, moving at 60 FPS = 60 pixels/second 
         # right_rocket.x += -1    # to check movement
         keys_pressed = pygame.key.get_pressed()
